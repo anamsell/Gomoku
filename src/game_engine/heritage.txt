@@ -1,0 +1,55 @@
+class IAGame
+{
+public:
+    virtual int currentPlayer();
+    virtual int getBoard();
+};
+
+// Game engine
+
+class Game : public IAGame
+{
+public:
+    int board = 0;
+
+    void putPiece()
+    {
+        return;
+    }
+
+    int getBoard()
+    {
+        return board;
+    }
+};
+
+void cycle()
+{
+    Game game = Game();
+    game.putPiece();
+    ia(game);
+}
+
+// IA
+
+void ia(IAGame game)
+{
+    int board = game.getBoard();
+}
+
+
+Game-engine:
+
+Boucle:
+    Je recois le nouveaux coup
+    Je regarde si le coup est jouable par le joueurs qui doit joue (est sur une case existante et vide/respect la regledu double three)
+        je retourne une error.
+    Je place la piece
+    Je capture les pièces.
+    Je regarde si la game est finit (1 des 2 joueurs a win ou match nul(toute les piece sont joueur/aucun moyen de gagner pour les 2 joueurs))
+        je renvoie le vainqueur ou nul si nul et met fin a la game_engine
+    Je change de joueurs
+    ?Je renvoie le coup jouer par notre ia
+
+Double three regle:
+    Poser une piece qui cree 2 free threes

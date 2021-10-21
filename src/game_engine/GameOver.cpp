@@ -1,4 +1,7 @@
 #include "Game.hpp"
+#include <iostream>
+#include <list>
+#include <Position.hpp>
 using namespace std;
 
 bool    Game::_is_game_over()

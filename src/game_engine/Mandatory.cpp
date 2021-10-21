@@ -1,7 +1,5 @@
 #include "Game.hpp"
 
-using namespace std;
-
 bool    Game::_is_in_mandatory()
 {
     for (const Position &n : _mandatory_moves)

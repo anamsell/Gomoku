@@ -1,4 +1,8 @@
 #include "Game.hpp"
+#include "Constants.hpp"
+#include "Position.hpp"
+#include <iostream>
+#include <vector>
 using namespace std;
 
 static  bool free_three(vector2d goban, Position pos, bool player, int dx, int dy)

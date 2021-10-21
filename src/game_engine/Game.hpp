@@ -1,8 +1,11 @@
 #ifndef Game_HPP
-#define	Game_HPP	
-#include "Position.hpp"
-#include "Constants.hpp"
+#define	Game_HPP
 
+#include "Constants.hpp"
+#include "Position.hpp"
+#include <iostream>
+#include <vector>
+#include <list>
 
 class Game
 {
@@ -56,8 +59,8 @@ class Game
         void                _directional_vulnerability(int, int, Position);
         // case two five
         bool                _are_unbreakables_five_stones(std::list<std::list<Position> >);
-        std::list<Position>      _vulnerables_stones(std::list<Position>, std::list<Position>);
-        std::list<Position>      _find_central_stones();
+        std::list<Position> _vulnerables_stones(std::list<Position>, std::list<Position>);
+        std::list<Position> _find_central_stones();
         void                _move_capture_both(Position, Position);
 };
 

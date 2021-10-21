@@ -13,20 +13,17 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
-#include "Size.hpp"
-#include <iostream>
-#include <vector>
-#include <list>
-#include <tuple>
-#include <cmath>
-#define DEFAULT_WINDOW_WIDTH 800
-#define DEFAULT_WINDOW_HEIGHT 500
+#define DEFAULT_WINDOW_WIDTH 1024
+#define DEFAULT_WINDOW_HEIGHT 768
 #define WINDOW_TITLE "Gomoku"
-#define WINDOW_PADDING 16
+#define GOBAN_IMG_PATH "ressources/goban.png"
 #define GOBAN_SIZE 19
 #define FIRST_PLAYER 'B'
 #define SECOND_PLAYER 'W'
 #define EMPTY_SQUARE 'O'
+
+#include <iostream>
+#include <vector>
 typedef std::vector<std::vector<char> > vector2d;
 
 #endif

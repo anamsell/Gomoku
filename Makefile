@@ -1,10 +1,11 @@
 EXECUTABLE = 	gomoku
 
 SRC_DIR =		src/
-SRC_SD =		shared/exceptions/Exception.cpp		\
-				shared/models/Position.cpp			\
-				shared/models/Size.cpp				\
-				shared/models/Frame.cpp
+
+SRC_LIB =		libraries/lib
+
+SRC_SD =		shared/models/Position.cpp			
+
 SRC_GE = 		game_engine/Game.cpp				\
 				game_engine/DoubleThree.cpp			\
 				game_engine/CaptureStone.cpp		\
@@ -15,35 +16,48 @@ SRC_GE = 		game_engine/Game.cpp				\
 
 SRC_IA =		ia/IA.cpp						
 
-SRC_UI =		ui/UI.cpp							\
-				ui/UIView.cpp						\
-				ui/UIBoard.cpp
+SRC_UI =		ui/UI.cpp
 
 SRC_FILES = 	gomoku.cpp	 						\
 				$(SRC_SD)							\
 				$(SRC_GE)							\
 				$(SRC_IA)							\
-				$(SRC_UI)							
+				$(SRC_UI)
+						
 SRC = 			$(addprefix $(SRC_DIR), $(SRC_FILES))
 
 HEADER_SD =		shared/models						\
 				shared/exceptions					\
 				shared/
-HEADER_GE =		game_engine/
+
+HEADER_GE =		game_engine
+
 HEADER_IA =		ia
-HEADER_UI =		ui									\
-				ui/models
+
+HEADER_UI =		ui
+
+HEADER_LIB =	libraries/include
+
 HEADER_DIR =	$(HEADER_SD)						\
 				$(HEADER_GE)						\
 				$(HEADER_IA)						\
 				$(HEADER_UI)
-HEADER_FILES =	$(addprefix $(HEADER_DIR), *.hpp)
-HEADER_INC =	$(addprefix -I $(SRC_DIR), $(HEADER_DIR))
+
+HEADER_SRC =	$(addprefix $(SRC_DIR), $(HEADER_DIR))
+
+HEADER_INC =    $(addprefix -I, $(HEADER_SRC) $(HEADER_LIB))
+
+LIB = $(addprefix -L, $(SRC_LIB))
+
+LIB_VERSION_INC = $(addprefix -l, $(LIB_VERSION_SRC))
+
+LIB_VERSION_SRC = 	SDL2-2.0.0 						\
+				SDL2_image
 
 OBJ = $(SRC:.cpp=.o)
 
 CC = 			g++
-CFLAGS = 		-std=c++11 -lncurses -Qunused-arguments
+CFLAGS = 		-std=c++11 -lncurses -Qunused-arguments 
 GTKMM = 		`pkg-config gtkmm-3.0 --cflags --libs`
 
 RED = 			\033[0;31m
@@ -55,12 +69,12 @@ END = 			\033[0m
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ)
-	@$(CC) $(CFLAGS) $(OBJ) -o $(EXECUTABLE)
+	@$(CC) $(CFLAGS) $(OBJ) -o $(EXECUTABLE) $(LIB_VERSION_INC)
 	@echo "$(BLUE)$(EXECUTABLE)\033[500D\033[42C$(GREEN)[DONE]$(END)"
 
 %.o : %.cpp
 	@echo "$(YELLOW)Compiling$(END) $(notdir $@)\033[500D\033[42C$(RED)[KO]$(END)"
-	@$(CC) $(CFLAGS) $(HEADER_INC) -o $@ -c $<
+	@$(CC) $(CFLAGS) $(HEADER_INC) $(LIB) -o $@ -c $<
 	@echo "\033[1A\033[500D\033[42C$(GREEN)[DONE]$(END)"
 
 clean:

@@ -1,12 +1,10 @@
 #include "Game.hpp"
 using namespace std;
 
-
 //constructor
 
 Game::Game() : _player(0), _first_player_captures_count(0), _second_player_captures_count(0), _goban(vector2d(GOBAN_SIZE, std::vector<char> (GOBAN_SIZE, EMPTY_SQUARE)))
-{
-}
+{}
 
 //a player try to make a move
 

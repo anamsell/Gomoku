@@ -13,6 +13,9 @@
 #ifndef POSITION_HPP
 #define POSITION_HPP
 
+#include <iostream>
+#include <vector>
+#include <list>
 #include "Constants.hpp"
 
 struct Position

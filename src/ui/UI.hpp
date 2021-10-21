@@ -1,31 +1,32 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   UI.hpp                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: bpisano <bpisano@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/21 14:49:22 by bpisano           #+#    #+#             */
-/*   Updated: 2021/09/22 12:35:31 by bpisano          ###   ########lyon.fr   */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef UI_HPP
 #define UI_HPP
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_timer.h>
+#include "Constants.hpp"
+#include <iostream>
+#include <stdio.h>
+
 class UI
 {
-private:
-    static UI *_shared;
-    UI();
+    public:
+    UI();       //Constructor
+    
+    void    init(const char *);
+    void    handle_event();
+    void    clean(int);
+    void    render();
+    bool    running(){return _is_running;}
 
-public:
-    UI(UI &other) = delete;
-    void operator=(const UI &) = delete;
+    private:
+    bool            _is_running;
+    SDL_Window      *_win;
+    SDL_Renderer    *_renderer;
+    SDL_Surface     *_surface;
+    SDL_Texture     *_texture;
+    SDL_Rect        _rect;
 
-    static UI *shared();
-
-    void showWindow();
 };
 
 #endif

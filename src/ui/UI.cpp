@@ -3,15 +3,14 @@ using namespace std;
 
 //constructor
 
-UI::UI()  : _is_running(true), _win(NULL), _renderer(NULL), _texture(NULL)
+UI::UI()  : _win(nullptr), _renderer(nullptr), _last_p1_timer("0.000"), _last_p2_timer("0.000"),
+            _timer(NULL), _game(new Game()), vs_ia(0)
 {
-    _rect = {0, 138, 630, 630};
 }
-
 
 void    UI::init(const char *title)
 {
-    if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
+    if (SDL_Init(SDL_INIT_EVERYTHING) == 0 && TTF_Init() == 0)
     {
         _win = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, 0);
         if (!_win)
@@ -19,18 +18,22 @@ void    UI::init(const char *title)
         _renderer = SDL_CreateRenderer(_win, -1, 0);
         if (!_renderer)
             clean(EXIT_FAILURE);
-        _surface = IMG_Load(GOBAN_IMG_PATH);
-        if (!_surface)
-            clean(EXIT_FAILURE);
-        _texture = SDL_CreateTextureFromSurface(_renderer, _surface);
-        SDL_FreeSurface(_surface);
-        if (!_texture)
-            clean(EXIT_FAILURE);
-        SDL_RenderCopy(_renderer, _texture, NULL, &_rect);
-        SDL_RenderPresent(_renderer);
+        _refresh_render(1);
     }
-    else
-        _is_running = false;
+    else {
+        clean(EXIT_FAILURE);
+    }
+}
+
+void    UI::_refresh_render(int first_turn) {
+    SDL_RenderClear(_renderer);
+//    if (_game->is_over())
+//        Button
+    _display_goban();
+    _display_info(first_turn);
+    SDL_RenderPresent(_renderer);
+    if (_game->new_move_is_valid())
+        _reset_timer();
 }
 
 void    UI::handle_event()
@@ -40,30 +43,38 @@ void    UI::handle_event()
     switch (event.type)
     {
         case SDL_QUIT:
-            _is_running = false;
+            clean(EXIT_SUCCESS);
             break;
         case SDL_KEYDOWN:
             if (event.key.keysym.sym == SDLK_ESCAPE)
-                _is_running = false;
+                clean(EXIT_SUCCESS);
             break;
+        case SDL_MOUSEBUTTONDOWN:
+            _click(event.button);
     }
 
 }
 
-void    UI::render()
+void    UI::_reset_timer()
 {
-    SDL_RenderClear(_renderer);
-    SDL_RenderPresent(_renderer); 
+    if (_game->new_move_is_valid())
+    {
+        timeval time_now{};
+
+        gettimeofday(&time_now, nullptr);
+        _timer = chrono::duration_cast< chrono::milliseconds >(chrono::system_clock::now().time_since_epoch());
+    }
 }
 
 void    UI::clean(int error_code)
 {
-    if (_texture)
-        SDL_DestroyTexture(_texture);
+    delete _game;
     if (_renderer)
         SDL_DestroyRenderer(_renderer);
     if (_win)
         SDL_DestroyWindow(_win);
     SDL_Quit();
+    if (error_code == EXIT_FAILURE)
+        printf("ERROR FAIL TO USE SDL PROPERLY.");
     exit(error_code);
 }

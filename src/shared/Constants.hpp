@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+/* **********************dfefeererefefe**************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   Constants.hpp                                      :+:      :+:    :+:   */
@@ -13,14 +13,22 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
-#define DEFAULT_WINDOW_WIDTH 1024
-#define DEFAULT_WINDOW_HEIGHT 768
+//user interface constant
+#define DEFAULT_WINDOW_WIDTH 1200
+#define DEFAULT_WINDOW_HEIGHT 770
+#define ERROR_MARGIN 7
+#define BOARDER_GOBAN 25
 #define WINDOW_TITLE "Gomoku"
 #define GOBAN_IMG_PATH "ressources/goban.png"
+#define WHITE_STONE_IMG_PATH "ressources/whitestone.png"
+#define BLACK_STONE_IMG_PATH "ressources/blackstone.png"
+#define GREEN_CIRCLE_IMG_PATH "ressources/greencircle.png"
+
+//game engine constant
 #define GOBAN_SIZE 19
 #define FIRST_PLAYER 'B'
 #define SECOND_PLAYER 'W'
-#define EMPTY_SQUARE 'O'
+#define EMPTY_INTERSECTION 'O'
 
 #include <iostream>
 #include <vector>

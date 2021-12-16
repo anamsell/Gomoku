@@ -5,12 +5,11 @@ using namespace std;
 
 void    Game::_capture_stone(Position pos)
 {
-    _captured_stones.push_back(pos);
     if (_player == 0)
         _first_player_captures_count += 1;
     else
         _second_player_captures_count += 1;
-    _goban[pos.x][pos.y] = EMPTY_SQUARE;
+    _goban[pos.x][pos.y] = EMPTY_INTERSECTION;
 
 }
 

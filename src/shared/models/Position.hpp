@@ -41,6 +41,8 @@ struct Position
 
     bool    is_in_list(std::list<Position>) const;
 
+    bool    is_white_on(vector2d) const;
+
     Position cpy();
     
 };

@@ -55,9 +55,9 @@ bool        Position::is_in_the_map() const
 
 bool        Position::is_empty_on(vector2d goban) const
 {
-    if  (this->is_in_the_map() == false)
+    if (this->is_in_the_map() == false)
         return false;
-    if (goban[this->x][this->y] == EMPTY_SQUARE)
+    if (goban[this->x][this->y] == EMPTY_INTERSECTION)
         return true;
     return false;
 }
@@ -90,4 +90,11 @@ bool        Position::is_in_list(std::list<Position> lst) const
         if (this->x == n.x && this->y == n.y)
             return true;
     return false;
+}
+
+bool        Position::is_white_on(vector2d goban) const
+{
+    if  (this->is_in_the_map() == false)
+        return false;
+    return goban[this->x][this->y] == SECOND_PLAYER;
 }

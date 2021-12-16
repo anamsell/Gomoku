@@ -6,11 +6,24 @@ using namespace std;
 
 bool    Game::_is_game_over()
 {
+    if (_is_game_tie())
+        return true;
     if (_first_player_captures_count == 10)
         return true;
     if (_second_player_captures_count == 10)
         return true;
     return _unbreakable_five_stones();
+}
+
+
+bool Game::_is_game_tie()
+{
+    for (const auto n : _goban)
+        for (const auto square : n)
+            if (square == EMPTY_INTERSECTION)
+                return false;
+    _game_tie = 1;
+    return true;
 }
 
 bool    Game::_unbreakable_five_stones()

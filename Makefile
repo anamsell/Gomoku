@@ -2,8 +2,6 @@ EXECUTABLE = 	gomoku
 
 SRC_DIR =		src/
 
-SRC_LIB =		libraries/lib
-
 SRC_SD =		shared/models/Position.cpp			
 
 SRC_GE = 		game_engine/Game.cpp				\
@@ -12,18 +10,24 @@ SRC_GE = 		game_engine/Game.cpp				\
 				game_engine/Mandatory.cpp			\
 				game_engine/GameOver.cpp			\
 				game_engine/UniqueFive.cpp			\
-				game_engine/TwoFives.cpp			
+				game_engine/TwoFives.cpp			\
+				game_engine/Data.cpp			
 
-SRC_IA =		ia/IA.cpp						
+SRC_AI =		ai/AI.cpp							\
+				ai/SearchSpace.cpp
 
-SRC_UI =		ui/UI.cpp
+SRC_UI =		ui/UI.cpp							\
+				ui/Click.cpp						\
+				ui/DisplayInfo.cpp					\
+				ui/DisplayGame.cpp					\
+				ui/Button.cpp
 
 SRC_FILES = 	gomoku.cpp	 						\
 				$(SRC_SD)							\
 				$(SRC_GE)							\
-				$(SRC_IA)							\
+				$(SRC_AI)							\
 				$(SRC_UI)
-						
+
 SRC = 			$(addprefix $(SRC_DIR), $(SRC_FILES))
 
 HEADER_SD =		shared/models						\
@@ -32,31 +36,28 @@ HEADER_SD =		shared/models						\
 
 HEADER_GE =		game_engine
 
-HEADER_IA =		ia
+HEADER_AI =		AI
 
 HEADER_UI =		ui
 
-HEADER_LIB =	libraries/include
-
 HEADER_DIR =	$(HEADER_SD)						\
 				$(HEADER_GE)						\
-				$(HEADER_IA)						\
+				$(HEADER_AI)						\
 				$(HEADER_UI)
 
 HEADER_SRC =	$(addprefix $(SRC_DIR), $(HEADER_DIR))
 
-HEADER_INC =    $(addprefix -I, $(HEADER_SRC) $(HEADER_LIB))
+HEADER_INC =    $(addprefix -I, $(HEADER_SRC))
 
-LIB = $(addprefix -L, $(SRC_LIB))
+FRAMEWORK_INC = $(addprefix -l, $(FRAMEWORK))
 
-LIB_VERSION_INC = $(addprefix -l, $(LIB_VERSION_SRC))
-
-LIB_VERSION_SRC = 	SDL2-2.0.0 						\
-				SDL2_image
+FRAMEWORK = 	SDL2-2.0.0 						\
+				SDL2_image						\
+				SDL2_ttf						
 
 OBJ = $(SRC:.cpp=.o)
 
-CC = 			g++
+CC = 			g++ -g
 CFLAGS = 		-std=c++11 -lncurses -Qunused-arguments 
 GTKMM = 		`pkg-config gtkmm-3.0 --cflags --libs`
 
@@ -69,12 +70,12 @@ END = 			\033[0m
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ)
-	@$(CC) $(CFLAGS) $(OBJ) -o $(EXECUTABLE) $(LIB_VERSION_INC)
+	@$(CC) $(CFLAGS) $(OBJ) -o $(EXECUTABLE) $(FRAMEWORK_INC)
 	@echo "$(BLUE)$(EXECUTABLE)\033[500D\033[42C$(GREEN)[DONE]$(END)"
 
 %.o : %.cpp
 	@echo "$(YELLOW)Compiling$(END) $(notdir $@)\033[500D\033[42C$(RED)[KO]$(END)"
-	@$(CC) $(CFLAGS) $(HEADER_INC) $(LIB) -o $@ -c $<
+	@$(CC) $(CFLAGS) $(HEADER_INC) -o $@ -c $<
 	@echo "\033[1A\033[500D\033[42C$(GREEN)[DONE]$(END)"
 
 clean:

@@ -10,6 +10,6 @@
 
 int                     heuristic(Game);
 Position                artificial_intelligence(Game);
-int                     minmax(int depth, Game, bool maximum, Position);
+int                     minmax(int depth, Game, bool maximum, Position, int alpha, int beta);
 
 #endif

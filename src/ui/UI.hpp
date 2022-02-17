@@ -15,10 +15,11 @@
 #include <iostream>
 #include <cstdio>
 #include <cmath>
-#include <sys/time.h>
+#include <ctime>
 
 
 class UI {
+
 public:
     UI();       //Constructor
     
@@ -27,7 +28,7 @@ public:
     void    clean(int);
     bool    vs_ia;
 
-    private:
+private:
 
     //display info
     void    _display_info(int);
@@ -35,7 +36,7 @@ public:
     void    _display_stone_counts();
     void    _display_timers();
     void    _display_move_error();
-    void    _write(int text_size, std::string msg, SDL_Rect, SDL_Color);
+    void    _write(int text_size, const std::string& msg, SDL_Rect, SDL_Color);
 
     //display game result
     void    _display_tie();
@@ -44,7 +45,7 @@ public:
     //display game
     void    _display_goban();
     void    _display_stones();
-    void    _display_stone(Position, bool = false);
+    void    _display_stone(Position, SDL_Surface *surface);
     void    _display_algo_play();
 
 
@@ -62,13 +63,22 @@ public:
     SDL_Window      *_win;
     SDL_Renderer    *_renderer;
 
+    //SLD surface for black/white/algo move
+    SDL_Surface *_surface_black;
+    SDL_Surface *_surface_white;
+    SDL_Surface *_surface_algo;
+
     // info player timer
     std::chrono::milliseconds  _timer;
     std::string                _last_p1_timer;
     std::string                _last_p2_timer;
 
     //Game engine class
-    Game        *_game;
+    Game        _game;
+
+
+    //precedent algo play
+    Position    _last_algo_play;
 
     // Buttons
 //    Button      *_new_game;

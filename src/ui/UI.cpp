@@ -4,7 +4,8 @@ using namespace std;
 //constructor
 
 UI::UI()  : _win(nullptr), _renderer(nullptr), _last_p1_timer("0.000"), _last_p2_timer("0.000"),
-            _timer(NULL), _game(new Game()), vs_ia(0)
+            _timer(NULL), vs_ia(false),_surface_black(IMG_Load(BLACK_STONE_IMG_PATH)),
+            _surface_white(IMG_Load(WHITE_STONE_IMG_PATH)), _surface_algo(IMG_Load(GREEN_CIRCLE_IMG_PATH))
 {
 }
 
@@ -32,7 +33,7 @@ void    UI::_refresh_render(int first_turn) {
     _display_goban();
     _display_info(first_turn);
     SDL_RenderPresent(_renderer);
-    if (_game->new_move_is_valid())
+    if (_game.new_move_is_valid())
         _reset_timer();
 }
 
@@ -57,18 +58,17 @@ void    UI::handle_event()
 
 void    UI::_reset_timer()
 {
-    if (_game->new_move_is_valid())
+    if (_game.new_move_is_valid())
     {
-        timeval time_now{};
-
-        gettimeofday(&time_now, nullptr);
         _timer = chrono::duration_cast< chrono::milliseconds >(chrono::system_clock::now().time_since_epoch());
     }
 }
 
 void    UI::clean(int error_code)
 {
-    delete _game;
+    SDL_FreeSurface(_surface_black);
+    SDL_FreeSurface(_surface_white);
+    SDL_FreeSurface(_surface_algo);
     if (_renderer)
         SDL_DestroyRenderer(_renderer);
     if (_win)

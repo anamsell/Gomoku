@@ -1,4 +1,5 @@
 #include <iostream>
+#include <array>
 #include <vector>
 #include <list>
 #include <tuple>
@@ -11,29 +12,86 @@
 #include <stdio.h>
 using namespace std;
 
-void    test(vector<int>& bla)
+struct Position
 {
-    bla[0] = 5;
-    printf("%d\n", bla[0]);
+    int     x;
+    int     y;
+
+    Position(int x = 0, int y = 0);
+    void    redefine(int ,int );
+    bool operator == (const Position& p) const {return x == p.x && y == p.y;}
+    bool operator != (const Position& p) const {return !operator==(p);}
+};
+
+
+Position::Position(int x, int y)
+{
+    this->x = x;
+    this->y = y;
 }
 
-list<int>   test2()
+void    Position::redefine(int x, int y)
 {
-    list<int> blabla;
-
-    blabla.push_front(5);
-    blabla.push_front(5);
-    blabla.push_front(5);
-    return (blabla);
+    this->x = x;
+    this->y = y;
 }
 
-int     main()
-{
+struct OneStruct {
     int     a;
-    int     b;
 
-    a = 5;
-    b = 6;
+    OneStruct(int a);
+};
 
-    printf("%d\n", min(a,b));
+OneStruct cpy(OneStruct st) {
+    OneStruct cpy = st;
+    cout << &cpy << endl;
+    cout << &st << endl;
+    return (cpy);
+}
+
+OneStruct::OneStruct(int a) {
+    this->a = a;
+}
+
+class   OneClass{
+    public:
+    int     a;
+
+    OneClass(){a = 10;}
+
+};
+
+void    fnc(OneStruct st)
+{
+    cout << &st << endl;
+}
+
+void     test1(array<list<int>,12 > &test)
+{
+
+    test[0].push_back(15);
+}
+
+int     test2()
+{
+    cout << "aa" << endl;
+    return 1;
+}
+
+
+void    test3(int *iss)
+{
+    iss[0] = 15;
+
+}
+
+int main() {
+
+    list<Position>  lst;
+    Position        pos(10,10);
+    lst.push_back(pos);
+    cout << lst.size() <<endl;
+    lst.remove(pos);
+    cout << lst.size() <<endl;
+
 }

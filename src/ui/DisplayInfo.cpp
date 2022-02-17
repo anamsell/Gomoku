@@ -10,11 +10,11 @@ void    UI::_display_info(int first_turn)
         _display_stone_counts();
         _display_timers();
     }
-    if (!_game->new_move_is_valid())
+    if (!_game.new_move_is_valid())
         _display_move_error();
-    if(_game->is_over())
+    if(_game.is_over())
     {
-        if (_game->is_tie())
+        if (_game.is_tie())
             _display_tie();
         else
             _display_winner();
@@ -27,16 +27,16 @@ void    UI::_display_player()
     string      msg = "Player 1 (black)";
     SDL_Color   white = {255, 255, 255, 255};
 
-    if (_game->get_player() == 0 && _game->is_over() == 0)
+    if (_game.get_player() == 'B' && _game.is_over() == 0)
         msg += "            (turn to play)";
     _write(25, msg, rect, white);
 
     rect = {780, 300};
-    if (vs_ia == true)
+    if (vs_ia)
         msg = "IA (white)";
     else
         msg = "Player 2 (white)";
-    if (_game->get_player() == 1 && _game->is_over() == 0)
+    if (_game.get_player() == 'W' && _game.is_over() == 0)
         msg += "            (turn to play)";
     _write(25, msg, rect, white);
 }
@@ -47,7 +47,7 @@ void    UI::_display_winner()
     string      msg;
     SDL_Color   green = {0, 255, 0, 255};
 
-    if (_game->get_player() == 1)
+    if (_game.get_player() == 'W')
         msg = "PLAYER 1 WIN";
     else
         msg = "PLAYER 2 WIN";
@@ -66,7 +66,7 @@ void    UI::_display_tie()
 void    UI::_display_move_error()
 {
     SDL_Rect    rect = {780, 500};
-    string      msg = _game->get_error_code();
+    string      msg = _game.get_error_code();
     SDL_Color   red = {255, 0, 0, 255};
 
     _write(23, msg, rect, red);
@@ -75,12 +75,12 @@ void    UI::_display_move_error()
 void    UI::_display_stone_counts()
 {
     SDL_Rect    rect = {800, 160};
-    string      msg = "Stones captured : " + to_string(_game->get_first_player_capture_count());
+    string      msg = "Stones captured : " + to_string(_game.get_fp_capture_count());
     SDL_Color   white = {255, 255, 255, 255};
     _write(20, msg, rect, white);
 
     rect = {800, 360};
-    msg = "Stones captured : " + to_string(_game->get_second_player_capture_count());
+    msg = "Stones captured : " + to_string(_game.get_sp_capture_count());
     _write(20, msg, rect, white);
 }
 
@@ -95,9 +95,9 @@ void    UI::_display_timers()
     timer_last_move = (time_now - _timer); // get the timer since last move in chrono::milliseconds
     string timer = to_string((float)timer_last_move.count()/1000); // convert milliseconds to float to string
     timer = timer.substr(0, timer.length() - 3); // remove the 3 last 0
-    if (_game->new_move_is_valid())
+    if (_game.new_move_is_valid())
     {
-        if (_game->get_player() == 1)
+        if (_game.get_player() == 'W')
             _last_p1_timer = timer;
         else
             _last_p2_timer = timer;
@@ -113,9 +113,9 @@ void    UI::_display_timers()
 }
 
 
-void    UI::_write(int ptsize, string msg, SDL_Rect rect, SDL_Color color)
+void    UI::_write(int ptsize, const string& msg, SDL_Rect rect, SDL_Color color)
 {
-    TTF_Font*       font  = TTF_OpenFont("ressources/Arial.ttf", ptsize);
+    TTF_Font*       font  = TTF_OpenFont("resources/Arial.ttf", ptsize);
     SDL_Texture*    texture;
     SDL_Surface*    surface;
 
@@ -129,7 +129,7 @@ void    UI::_write(int ptsize, string msg, SDL_Rect rect, SDL_Color color)
     SDL_FreeSurface(surface);
     if (!texture)
         clean(EXIT_FAILURE);
-    SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
-    SDL_RenderCopy(_renderer, texture, NULL, &rect);
+    SDL_QueryTexture(texture, nullptr, nullptr, &rect.w, &rect.h);
+    SDL_RenderCopy(_renderer, texture, nullptr, &rect);
     SDL_DestroyTexture(texture);
 }

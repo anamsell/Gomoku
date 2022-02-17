@@ -16,12 +16,14 @@ bool    UI::_is_on_goban(SDL_MouseButtonEvent &event)
         if ((y % 40) < ERROR_MARGIN || (y % 40) > (40 - ERROR_MARGIN))
             {
                 pos.redefine((int)round((float)y/40), (int)round((float)x/40));
-                _game->new_move(pos);
+                _game.new_move(pos);
                 _refresh_render(0);
-                if (vs_ia == true && _game->get_player() == 1)
+                if (_game.is_over())
+                    return true;
+                if (vs_ia && _game.get_player() == 'W')
                 {
-                    _game->new_move(artificial_intelligence(*_game));
-                    if(_game->new_move_is_valid() == false)
+                    _game.new_move(artificial_intelligence(_game));
+                    if(not _game.new_move_is_valid())
                         clean(0);
                     _refresh_render(0);
                 }
@@ -31,7 +33,7 @@ bool    UI::_is_on_goban(SDL_MouseButtonEvent &event)
 
 void    UI::_click(SDL_MouseButtonEvent &event)
 {
-    if(!_game->is_over())
+    if(!_game.is_over())
         _is_on_goban(event);
 
 }

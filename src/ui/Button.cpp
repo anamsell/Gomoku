@@ -24,7 +24,7 @@ void    Button::_display_button()
 
 void    Button::_write(int ptsize, SDL_Color color)
 {
-    TTF_Font*       font  = TTF_OpenFont("ressources/Arial.ttf", ptsize);
+    TTF_Font*       font  = TTF_OpenFont("resources/Arial.ttf", ptsize);
     SDL_Texture*    texture;
     SDL_Surface*    surface;
 

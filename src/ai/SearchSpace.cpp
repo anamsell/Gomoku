@@ -2,112 +2,86 @@
 
 using namespace std;
 
-list<Position>      good_moves(Game game)
+void    add_pos_to_list(Position pos, array<list<Position>, 12>& possibles_moves, const Game game)
 {
-    list<Position>  possibles_good_moves;
-    list<Area>      areas;
-    Position        position(-1, -1);
-    vector2d        goban;
-
-    goban = game.get_goban();
-    areas = all_areas(goban);
-
-    while (++position.x != GOBAN_SIZE) {
-        position.y = -1;
-        while (++position.y != GOBAN_SIZE)
-            if (position.is_empty_on(goban) && is_in_one_area(position, areas) && pos_is_possible(game, position))
-                possibles_good_moves.push_back(position);
+    for (int i = 0; i != 12; i++) {
+        if (possibles_moves[i].empty())
+            continue;
+        for (list<Position>::iterator it = possibles_moves[i].begin(); it != possibles_moves[i].end(); it++)
+            if (it->x == pos.x && it->y == pos.y) {
+                if (i!=11) {
+                    possibles_moves[i].erase(it);
+                    possibles_moves[i+1].push_front(pos);
+                }
+                return;
+            }
     }
-    return possibles_good_moves;
+    possibles_moves[0].push_back(pos);
 }
 
-bool            pos_is_possible(Game game, Position position)
+void    remove_pos_from_list(Position pos, array<list<Position>, 12>& possibles_moves)
 {
-    game.new_move(position);
-    return game.new_move_is_valid();
+    for (int i = 0; i != 12; i++)
+        possibles_moves[i].remove(pos);
 }
 
-bool            is_in_one_area(Position position, list<Area> areas)
+void    alignement_has_two_stone(int dx, int dy, array<list<Position>, 12>& possibles_moves, Game game)
 {
-    for (auto &area : areas)
-        if (position.x >= area.up && position.x <= area.down && position.y >= area.left && position.y <= area.right)
-            return true;
-    return false;
-}
+    Position    last_move = game.get_move();
 
-list<Area>      all_areas(vector2d goban)
-{
-    Position        position(-1, -1);
-    list<Area>      areas;
-
-    while (++position.x != GOBAN_SIZE) {
-        position.y = -1;
-        while (++position.y != GOBAN_SIZE)
-            if (!position.is_empty_on(goban))
-                areas.push_back(new_area(position, goban));
+    for (int i = 1; i < 5; i++) {
+        last_move.move(dx, dy);
+        if(!last_move.is_on_the_map())
+            break;
+        add_pos_to_list(last_move, possibles_moves, game);
     }
-    return areas;
 }
 
-Area    new_area(Position position, vector2d &goban)
+void    possible_alignement(int dx, int dy, array<list<Position>, 12>& possibles_moves, Game game)
 {
-    Area    area;
+    Position    last_move = game.get_move();
 
-    area.up = position.x;
-    area.down = position.x;
-    area.left = position.y;
-    area.right = position.y;
-    searching_dimension_of_area(position, goban, area, 5);
-    removing_stone_of_area(goban, area);
-    increase_size(area);
-    return(area);
-}
-
-void    searching_dimension_of_area(Position position, vector2d& goban, Area& area, int depth)
-{
-    goban[position.x][position.y] = EMPTY_INTERSECTION;
-    area.down = max(area.down, position.x);
-    area.left = min(area.left, position.y);
-    area.right = max(area.right, position.y);
-    for (int i = -1; i < 2; i++)
-        for (int j = -1; j < 2; j++)
-            if (i || j)
-                for (int multi = 0; multi != depth; multi++)
-                    if (stone_in_area(multi*i, multi*j, position, goban, area, depth - multi))
-                        break;
-
-}
-
-bool    stone_in_area(int dx, int dy, Position position, vector2d& goban, Area& area, int depth)
-{
-    position.move(dx, dy);
-    if (!position.is_in_the_map())
-        return false;
-    if (position.is_empty_on(goban))
-        return false;
-    searching_dimension_of_area(position, goban, area, depth);
-    return true;
-}
-
-void    increase_size(Area& area)
-{
-    if (area.up > 0)
-        area.up--;
-    if (area.down < GOBAN_SIZE - 1)
-        area.down++;
-    if (area.left > 0)
-        area.left--;
-    if (area.right < GOBAN_SIZE - 1)
-        area.right++;
-}
-
-void    removing_stone_of_area(vector2d& goban, Area area)
-{
-    Position pos(area.up - 1 , area.left - 1);
-
-    while(++pos.x <= area.down) {
-        pos.y = area.left - 1;
-        while(++pos.y <= area.right)
-            goban[pos.x][pos.y] = EMPTY_INTERSECTION;
+    for (int i = 1; i < 5; i++) {
+        last_move.move(dx, dy);
+        last_move.set_value(game.get_goban());
+        if (!last_move.value)
+            break;
+        if (last_move.value != EMPTY_INTERSECTION) {
+            alignement_has_two_stone(dx,dy, possibles_moves,game);
+            break;
+        }
     }
+    last_move = game.get_move();
+    for (int i = 1; i < 5; i++) {
+        last_move.move(-dx, -dy);
+        last_move.set_value(game.get_goban());
+        if (!last_move.value)
+            break;
+        if (last_move.value != EMPTY_INTERSECTION) {
+            alignement_has_two_stone(-dx,-dy, possibles_moves,game);
+            break;
+        }
+    }
+}
+
+array<list<Position>, 12> update_good_move(array<list<Position>, 12> possibles_moves, Game game)
+{
+    Position    last_move = game.get_move();
+    Position    pos;
+
+//    remove_pos_from_list(last_move, possibles_moves);
+    for (int i = -1; i != 2; i++)
+        for (int j = -1; j != 2; j++)
+            if (i || j) {
+                pos = last_move;
+                pos.move(i, j);
+                pos.set_value(game.get_goban());
+                if (pos.value)
+                    add_pos_to_list(pos, possibles_moves, game);
+            }
+    possible_alignement(1, 0, possibles_moves, game);
+    possible_alignement(0, 1, possibles_moves, game);
+    possible_alignement(1, 1, possibles_moves, game);
+    possible_alignement(1, -1, possibles_moves, game);
+    return possibles_moves;
 }

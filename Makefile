@@ -11,7 +11,7 @@ SRC_GE = 		game_engine/Game.cpp				\
 				game_engine/GameOver.cpp			\
 				game_engine/UniqueFive.cpp			\
 				game_engine/TwoFives.cpp			\
-				game_engine/Data.cpp			
+				game_engine/LastCapture.cpp
 
 SRC_AI =		ai/AI.cpp							\
 				ai/SearchSpace.cpp
@@ -36,7 +36,7 @@ HEADER_SD =		shared/models						\
 
 HEADER_GE =		game_engine
 
-HEADER_AI =		AI
+HEADER_AI =		ai
 
 HEADER_UI =		ui
 

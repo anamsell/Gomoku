@@ -8,8 +8,9 @@
 #include "SearchSpace.hpp"
 
 
-int                     heuristic(Game);
-Position                artificial_intelligence(Game);
-int                     minmax(int depth, Game, bool maximum, Position, int alpha, int beta);
+int                     heuristic(Game&, char player);
+Position                artificial_intelligence(Game&);
+int                     minmax(int depth, Game, bool maximum, int alpha, int beta, char player);
+
 
 #endif

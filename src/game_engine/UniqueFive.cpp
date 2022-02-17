@@ -11,28 +11,58 @@ bool    Game::_is_unbreakable_five_stones(list<Position> five)
         if (i >= (five.size() - 5))
             _vulnerable(n);
         i++;
+        if (i == 5)
+            break;
     }
-    return _mandatory_moves.size() == 0;
+    return _mandatory_moves.empty();
 }
 
 void    Game::_vulnerable(Position pos)
 {
-    for (int i = -1; i < 2; i++)
-        for (int j = -1; j < 2; j++)
-            if (i || j)
-                _directional_vulnerability(i, j, pos);
+    _directional_vulnerability(1, 0, pos);
+    _directional_vulnerability(0, 1, pos);
+    _directional_vulnerability(1, 1, pos);
+    _directional_vulnerability(1, -1, pos);
 }
 
 void    Game::_directional_vulnerability(int dx, int dy, Position pos)
 {
-        pos.move(-dx, -dy); //if previous one is an ennemy
-        if (pos.is_enemy_on(_goban, _player) == false)
-            return;
-        pos.move(2*dx,2*dy); // if next one is an ally
-        if (pos.is_ally_on(_goban, _player) == false)
-            return;
-        pos.move(dx,dy); // if the one after is empty ==  the 5 is vulnerable + actual pos is a mandatory next move for opp ( example:  WBB0)
-        if (pos.is_empty_on(_goban) == true)
-            _mandatory_moves.push_back(pos);
+    Position    forward = pos;
+    Position    backward = pos;
+
+    forward.move(dx,dy);
+    backward.move(-dx,-dy);
+    forward.set_value(_goban);
+    backward.set_value(_goban);
+    if (forward.value != _player && backward.value != _player) // to be vulnerable a stone must have a nearby ally
+        return;
+    if (forward.value == EMPTY_INTERSECTION) { // Means we are in: WBBE with B player W opp and E empty or not vulnerable
+        backward.move(-dx, -dy);
+        backward.set_value(_goban);
+        if (backward.value == _opp)
+            _mandatory_moves.push_back(forward);
+        return;
+    }
+    if (backward.value == EMPTY_INTERSECTION) { // Means we are in: EBBW with B player W opp and E empty or not vulnerable
+        forward.move(dx, dy);
+        forward.set_value(_goban);
+        if (forward.value == _opp)
+            _mandatory_moves.push_back(backward);
+        return;
+    }
+    if (forward.value == _opp) { // Means we are in: WBBE with B player W opp and E empty or not vulnerable
+        backward.move(-dx, -dy);
+        backward.set_value(_goban);
+        if (backward.value == EMPTY_INTERSECTION)
+            _mandatory_moves.push_back(backward);
+        return;
+    }
+    if (backward.value == _opp) { // Means we are in: EBBW with B player W opp and E empty or not vulnerable
+        forward.move(dx, dy);
+        forward.set_value(_goban);
+        if (forward.value == EMPTY_INTERSECTION)
+            _mandatory_moves.push_back(forward);
+        return;
+    }
 
 }
